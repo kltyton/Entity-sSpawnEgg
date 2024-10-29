@@ -116,14 +116,9 @@ public class GuiItemMixin {
         mobEntity.bodyYaw = 0.0f;
         mobEntity.prevBodyYaw = 0.0f;
         mobEntity.setVelocity(Vec3d.ZERO);
-        // 重置 LimbAnimator 的状态
         mobEntity.limbAnimator.updateLimbs(0.0f,0.0f);
         mobEntity.limbAnimator.setSpeed(0.0f);
     }
-
-    /**
-     * 锁定实体的动画状态，避免其在渲染时更新动画。
-     */
     @Unique
     private void lockAnimationState(MobEntity mobEntity) {
         mobEntity.age = 0;
