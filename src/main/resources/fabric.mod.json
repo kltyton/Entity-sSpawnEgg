@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "kltytonspawnegg",
+  "version": "${version}",
+  "name": "kltytonSpawnEgg",
+  "description": "A mod",
+  "authors": [
+    "kltyton"
+  ],
+  "contact": {
+    "website": "https://github.com/kltyton/kltytonSpawnEgg",
+    "repo": "https://github.com/kltyton/kltytonSpawnEgg"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/kltytonspawnegg/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.kltyton.kltytonspawnegg.client.KltytonspawneggClient"
+    ]
+  },
+  "mixins": [
+    "kltytonspawnegg.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}"
+  }
+}
