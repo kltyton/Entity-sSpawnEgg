@@ -1,5 +1,7 @@
 package com.kltyton.kltytonspawnegg.mixin;
 
+import com.kltyton.kltytonspawnegg.config.KltytonConfig;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -27,6 +29,8 @@ import java.util.Map;
 
 @Mixin(ItemRenderer.class)
 public class GuiItemMixin {
+    @Unique
+    private final KltytonConfig config = AutoConfig.getConfigHolder(KltytonConfig.class).getConfig();
 
     @Unique
     private final Map<EntityType<?>, MobEntity> entityCache = new HashMap<>();
@@ -86,14 +90,18 @@ public class GuiItemMixin {
         resetEntityState(mobEntity);
         lockAnimationState(mobEntity);
         matrices.push();
-        float scale = calculateScale(mobEntity);
+        //总体缩放比例
+        float scale = calculateScale(mobEntity)* config.totalZoomRate;
+        float iconZoomRate = config.iconZoomRate;
+        float rotationAngle = config.rotationAngle;
+        float itemZoomRate = config.itemZoomRate;
 
         if (renderMode == ModelTransformationMode.GUI) {
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-45.0f));
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotationAngle));
             matrices.translate(0.0, -0.5, 0.0);
-            matrices.scale(scale * 1.6f, scale * 1.6f, scale * 1.6f);
+            matrices.scale(scale * 1.6f * iconZoomRate, scale * 1.6f * iconZoomRate, scale * 1.6f * iconZoomRate);
         } else {
-            matrices.scale(scale, scale, scale);
+            matrices.scale(scale * itemZoomRate, scale * itemZoomRate, scale * itemZoomRate);
         }
 
         EntityRenderDispatcher dispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
@@ -132,9 +140,11 @@ public class GuiItemMixin {
      */
     @Unique
     private float calculateScale(MobEntity mobEntity) {
+        float maxZoomRate = config.maxZoomRate;
+        float minZoomRate = config.minZoomRate;
         Vec3d dimensions = new Vec3d(mobEntity.getWidth(), mobEntity.getHeight(), mobEntity.getWidth());
         float maxDimension = (float) Math.max(dimensions.x, Math.max(dimensions.y, dimensions.z));
         float scale = 0.45f / maxDimension;
-        return Math.max(0.1f, Math.min(scale, 0.38f));
+        return Math.max(minZoomRate, Math.min(scale, maxZoomRate));
     }
 }
